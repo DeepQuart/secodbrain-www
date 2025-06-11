@@ -29,12 +29,13 @@ const LoginPage = () => {
         username: loginData.username,
         password: loginData.password,
       });
+
       if ("data" in response && response.data?.user) {
         router.push("/memories");
       } else {
         setError("Invalid username or password");
       }
-    } catch (error) {
+    } catch {
       setError("An error occurred during login");
     } finally {
       setIsLoading(false);
@@ -68,6 +69,7 @@ const LoginPage = () => {
               value={loginData.username}
               onChange={handleChange}
               disabled={isLoading}
+              required
             />
           </div>
           <div>
@@ -80,9 +82,14 @@ const LoginPage = () => {
               value={loginData.password}
               onChange={handleChange}
               disabled={isLoading}
+              required
             />
           </div>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-sm" aria-live="polite">
+              {error}
+            </p>
+          )}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <Button
@@ -93,7 +100,7 @@ const LoginPage = () => {
             {isLoading ? "Logging in..." : "Log In"}
           </Button>
           <p className="text-sm text-center">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/sign-up" className="text-blue-600 underline hover:opacity-80">
               Sign Up
             </Link>

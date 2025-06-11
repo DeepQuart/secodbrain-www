@@ -7,10 +7,8 @@ import Link from "next/link";
 import { z } from "zod";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@radix-ui/react-dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
 
 const signUpSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -37,7 +35,7 @@ interface FormErrors {
   email?: string;
   name?: string;
   password?: string;
-  general?: string; // Added general property
+  general?: string;
 }
 
 const SignUpPage = () => {
@@ -117,13 +115,20 @@ const SignUpPage = () => {
                 placeholder={`Enter your ${field}`}
                 className={errors[field as keyof FormErrors] ? "border-red-500" : ""}
                 disabled={isLoading}
+                required
               />
               {errors[field as keyof FormErrors] && (
-                <p className="text-red-500 text-sm">{errors[field as keyof FormErrors]}</p>
+                <p className="text-red-500 text-sm" aria-live="polite">
+                  {errors[field as keyof FormErrors]}
+                </p>
               )}
             </div>
           ))}
-          {errors.general && <p className="text-red-500 text-sm">{errors.general}</p>}
+          {errors.general && (
+            <p className="text-red-500 text-sm text-center" aria-live="polite">
+              {errors.general}
+            </p>
+          )}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <Button

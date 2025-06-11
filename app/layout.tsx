@@ -3,7 +3,7 @@
 
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+
 import "./globals.css";
 import { motion } from "framer-motion";
 import NavigationBar from "@/components/ui/navigation-bar";
