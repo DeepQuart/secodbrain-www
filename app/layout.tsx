@@ -1,40 +1,35 @@
 "use client";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { PropsWithChildren, useState } from "react";
-import { ThemeProvider } from "@/components/theme-provider";
-import NavigationWrapper from "@/components/NavigationWrapper";
+
+
+import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+import "./globals.css";
+import { motion } from "framer-motion";
+import NavigationBar from "@/components/ui/navigation-bar";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+// Create a QueryClient instance
+const queryClient = new QueryClient();
 
-
-
-const RootLayout = ({ children }: PropsWithChildren) => {
-  const [queryClient] = useState(() => new QueryClient());
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="min-h-screen flex flex-col bg-background text-foreground">
-              <NavigationWrapper />
-              <main className="flex-1 p-4 pt-[4.5rem]">{children}</main>
-            </div>
-          </ThemeProvider>
-        </QueryClientProvider>
+    <html lang="en">
+      <body className="bg-background text-foreground font-sans">
+        <ThemeProvider attribute="class" defaultTheme="light">
+          {/* Wrap the app with QueryClientProvider */}
+          <QueryClientProvider client={queryClient}>
+            <NavigationBar />
+            <motion.main
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="pt-16"
+            >
+              {children}
+            </motion.main>
+          </QueryClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
-};
-
-export default RootLayout;
+}

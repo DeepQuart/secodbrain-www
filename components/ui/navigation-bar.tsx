@@ -4,11 +4,7 @@ import React, { useState } from "react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -17,13 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import {
-  LogOutIcon,
-  UserIcon,
-  Moon,
-  Sun,
-  Search,
-} from "lucide-react";
+import { LogOutIcon, UserIcon, Moon, Sun, Search } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,38 +47,34 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onSearch }) => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-background/70 border-b shadow-sm text-foreground px-6 py-3">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
-          <a href="/" className="text-lg font-semibold hover:text-primary">
-            Memory Vault
-          </a>
-        </div>
+        <a href="/" className="text-lg font-semibold hover:text-blue-600">
+          Second Brain
+        </a>
 
         {onSearch && (
-          <div className="flex-1 hidden md:flex justify-center">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const query = (e.currentTarget as any).q.value;
-                onSearch(query);
-              }}
-              className="relative w-full max-w-md"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const query = (e.currentTarget as any).q.value;
+              onSearch(query);
+            }}
+            className="relative flex-1 max-w-md"
+          >
+            <Input
+              type="text"
+              name="q"
+              placeholder="Search memories..."
+              className="pr-12 rounded-full border border-input bg-background shadow-sm focus-visible:ring-2 focus-visible:ring-blue-600"
+            />
+            <Button
+              type="submit"
+              size="sm"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full px-3 py-1 h-7 text-xs bg-blue-600 text-white hover:bg-blue-700"
             >
-              <Input
-                type="text"
-                name="q"
-                placeholder="Search memories..."
-                className="pr-12 rounded-full border border-input bg-background shadow-sm focus-visible:ring-2 focus-visible:ring-ring transition-all"
-              />
-              <Button
-                type="submit"
-                size="sm"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full px-3 py-1 h-7 text-xs bg-blue-600 text-white hover:bg-blue-700 transition"
-              >
-                <Search className="h-4 w-4 mr-1" />
-                Search
-              </Button>
-            </form>
-          </div>
+              <Search className="h-4 w-4 mr-1" />
+              Search
+            </Button>
+          </form>
         )}
 
         <div className="flex items-center gap-4">
@@ -97,16 +83,12 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onSearch }) => {
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
             className="p-2"
           >
-            {theme === "light" ? (
-              <Moon className="h-5 w-5" />
-            ) : (
-              <Sun className="h-5 w-5" />
-            )}
+            {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
           </Button>
 
           {!user ? (
             <a href="/login">
-              <Button>Login</Button>
+              <Button className="bg-blue-600 hover:bg-blue-700">Login</Button>
             </a>
           ) : (
             <DropdownMenu>
