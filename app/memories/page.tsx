@@ -24,6 +24,7 @@ export default function MemoriesPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
 
   const fetchMemories = async () => {
     try {
@@ -61,6 +62,7 @@ export default function MemoriesPage() {
         if (data.memory) {
           setTitle("");
           setContent("");
+          setShowForm(false);
           setMemories([data.memory, ...memories]);
         } else {
           setError(data.error || "Failed to add memory");
@@ -99,52 +101,68 @@ export default function MemoriesPage() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 className="text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-        Your Second Brain
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+          Your Second Brain
+        </h1>
+        <Button
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => {
+            setShowForm((prev) => !prev);
+            if (!showForm) {
+              setTitle("");
+              setContent("");
+              setEditingId(null);
+            }
+          }}
+        >
+          {showForm ? "Cancel" : "Add Memory"}
+        </Button>
+      </div>
 
-      <motion.div
-        className="mb-6"
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder={editingId ? "Edit memory title..." : "Enter memory title..."}
-          className="mb-3 rounded-lg shadow-sm"
-        />
-        <Textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder={editingId ? "Edit memory content..." : "Add a new memory..."}
-          rows={4}
-          className="mb-3 rounded-lg shadow-sm"
-        />
-        <div className="flex gap-2">
-          <Button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            {editingId ? (loading ? "Saving..." : "Update Memory") : loading ? "Saving..." : "Save Memory"}
-          </Button>
-          {editingId && (
+      {showForm && (
+        <motion.div
+          className="mb-6"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder={editingId ? "Edit memory title..." : "Enter memory title..."}
+            className="mb-3 rounded-lg shadow-sm"
+          />
+          <Textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder={editingId ? "Edit memory content..." : "Add a new memory..."}
+            rows={4}
+            className="mb-3 rounded-lg shadow-sm"
+          />
+          <div className="flex gap-2">
+            <Button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {editingId ? (loading ? "Saving..." : "Update Memory") : loading ? "Saving..." : "Save Memory"}
+            </Button>
             <Button
               variant="ghost"
               onClick={() => {
                 setEditingId(null);
                 setTitle("");
                 setContent("");
+                setShowForm(false);
               }}
             >
               Cancel
             </Button>
-          )}
-        </div>
-        {error && <p className="text-red-500 mt-2">{error}</p>}
-      </motion.div>
+          </div>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
+        </motion.div>
+      )}
 
       {serverUrl && <ChatAssistant serverUrl={serverUrl} />}
       <MemoryList
@@ -153,6 +171,7 @@ export default function MemoriesPage() {
           setTitle(memory.title);
           setContent(memory.content);
           setEditingId(memory.id);
+          setShowForm(true);
         }}
         onDelete={handleDelete}
       />
