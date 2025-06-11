@@ -39,14 +39,16 @@ interface FormErrors {
 }
 
 const SignUpPage = () => {
-  const { data } = betterAuthClient.useSession();
+  const { data, isPending } = betterAuthClient.useSession();
   const router = useRouter();
+
   const [formData, setFormData] = useState<FormData>({
     username: "",
     email: "",
     name: "",
     password: "",
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -134,7 +136,7 @@ const SignUpPage = () => {
           <Button
             className="w-full bg-blue-600 hover:bg-blue-700"
             onClick={handleSignUp}
-            disabled={isLoading}
+            disabled={isLoading || isPending}
           >
             {isLoading ? "Creating account..." : "Sign Up"}
           </Button>

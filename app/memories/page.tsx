@@ -32,7 +32,7 @@ export default function MemoriesPage() {
       const data = await res.json();
       if (data.memories) setMemories(data.memories);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching memories:", err);
     }
   };
 
@@ -69,6 +69,7 @@ export default function MemoriesPage() {
         }
       }
     } catch (err) {
+      console.error("Error submitting memory:", err);
       setError("Something went wrong");
     } finally {
       setLoading(false);
@@ -90,7 +91,7 @@ export default function MemoriesPage() {
         alert(data.error || "Failed to delete memory");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error deleting memory:", err);
     }
   };
 
