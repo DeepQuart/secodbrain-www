@@ -6,7 +6,13 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { z } from "zod";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -39,16 +45,14 @@ interface FormErrors {
 }
 
 const SignUpPage = () => {
-  const { data, isPending } = betterAuthClient.useSession();
+  const { data } = betterAuthClient.useSession();
   const router = useRouter();
-
   const [formData, setFormData] = useState<FormData>({
     username: "",
     email: "",
     name: "",
     password: "",
   });
-
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -79,8 +83,12 @@ const SignUpPage = () => {
         password: formData.password,
       });
       router.push("/memories");
-    } catch (err: any) {
-      setErrors({ general: err.message || "Signup failed" });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrors({ general: err.message });
+      } else {
+        setErrors({ general: "Signup failed" });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -100,27 +108,43 @@ const SignUpPage = () => {
     >
       <Card className="w-full max-w-md shadow-lg border rounded-2xl">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Create Your Second Brain</CardTitle>
+          <CardTitle className="text-2xl text-center">
+            Create Your Second Brain
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {["username", "email", "name", "password"].map((field) => (
             <div key={field}>
-              <label htmlFor={field} className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor={field}
+                className="block text-sm font-medium text-gray-700"
+              >
                 {field.charAt(0).toUpperCase() + field.slice(1)}
               </label>
               <Input
                 id={field}
                 name={field}
-                type={field === "password" ? "password" : field === "email" ? "email" : "text"}
+                type={
+                  field === "password"
+                    ? "password"
+                    : field === "email"
+                    ? "email"
+                    : "text"
+                }
                 value={formData[field as keyof FormData]}
                 onChange={handleChange}
                 placeholder={`Enter your ${field}`}
-                className={errors[field as keyof FormErrors] ? "border-red-500" : ""}
+                className={
+                  errors[field as keyof FormErrors] ? "border-red-500" : ""
+                }
                 disabled={isLoading}
                 required
               />
               {errors[field as keyof FormErrors] && (
-                <p className="text-red-500 text-sm" aria-live="polite">
+                <p
+                  className="text-red-500 text-sm"
+                  aria-live="polite"
+                >
                   {errors[field as keyof FormErrors]}
                 </p>
               )}
@@ -136,13 +160,16 @@ const SignUpPage = () => {
           <Button
             className="w-full bg-blue-600 hover:bg-blue-700"
             onClick={handleSignUp}
-            disabled={isLoading || isPending}
+            disabled={isLoading}
           >
             {isLoading ? "Creating account..." : "Sign Up"}
           </Button>
           <p className="text-sm text-center">
             Already have an account?{" "}
-            <Link href="/login" className="text-blue-600 underline hover:opacity-80">
+            <Link
+              href="/login"
+              className="text-blue-600 underline hover:opacity-80"
+            >
               Log In
             </Link>
           </p>
